@@ -808,6 +808,16 @@ public class RenameTestGenerated extends AbstractRenameTest {
         runTest("idea/testData/refactoring/rename/renameKotlinFunctionInEnum/renameKotlinFunctionInEnumFromSubclass.test");
     }
 
+    @TestMetadata("renameKotlinFunctionInGenericClass/renameKotlinFunctionInGenericClass.test")
+    public void testRenameKotlinFunctionInGenericClass_RenameKotlinFunctionInGenericClass() throws Exception {
+        runTest("idea/testData/refactoring/rename/renameKotlinFunctionInGenericClass/renameKotlinFunctionInGenericClass.test");
+    }
+
+    @TestMetadata("renameKotlinFunctionInGenericClass/renameKotlinFunctionInGenericClassFromSubclass.test")
+    public void testRenameKotlinFunctionInGenericClass_RenameKotlinFunctionInGenericClassFromSubclass() throws Exception {
+        runTest("idea/testData/refactoring/rename/renameKotlinFunctionInGenericClass/renameKotlinFunctionInGenericClassFromSubclass.test");
+    }
+
     @TestMetadata("renameKotlinFunWithJvmName/renameKotlinFunWithJvmName.test")
     public void testRenameKotlinFunWithJvmName_RenameKotlinFunWithJvmName() throws Exception {
         runTest("idea/testData/refactoring/rename/renameKotlinFunWithJvmName/renameKotlinFunWithJvmName.test");
