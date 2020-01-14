@@ -241,3 +241,6 @@ internal class KonanCompilerRunner(
 
 internal class KonanKlibRunner(project: Project, additionalJvmArgs: List<String> = emptyList()) :
     KonanCliRunner("klib", "Klib management tool", project, additionalJvmArgs)
+
+internal class KonanLibraryGenerationRunner(project: Project, additionalJvmArgs: List<String> = emptyList()) :
+    KonanCliRunner("generatePlatformLibraries", "Platform libraries generator", project, additionalJvmArgs)
