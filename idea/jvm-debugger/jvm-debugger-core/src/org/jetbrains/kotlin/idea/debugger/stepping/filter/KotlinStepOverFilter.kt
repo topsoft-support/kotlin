@@ -69,6 +69,7 @@ class KotlinStepOverFilter(
     override fun locationMatches(context: SuspendContextImpl, location: Location): Boolean {
         val stackFrame = context.frameProxy?.stackFrame ?: return true
         val token = LocationToken.from(stackFrame)
+
         val callerInfo = StepOverCallerInfo.from(location)
 
         if (callerInfo.methodName != null && callerInfo.methodSignature != null && this.callerInfo == callerInfo) {
