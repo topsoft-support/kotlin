@@ -211,7 +211,7 @@ class SequenceBuilderTest {
             yield(5)
             yieldAll(listOf(6))
             yield(7)
-            yieldAll(listOf())
+            yieldAll(listOf<Int>())
             yield(8)
         }
         assertEquals(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8), result.toList())
@@ -242,13 +242,13 @@ class SequenceBuilderTest {
             effects.add("a")
             yieldAll(listOf(1, 2))
             effects.add("b")
-            yieldAll(listOf())
+            yieldAll(listOf<Int>())
             effects.add("c")
             yieldAll(listOf(3))
             effects.add("d")
             yield(4)
             effects.add("e")
-            yieldAll(listOf())
+            yieldAll(listOf<Int>())
             effects.add("f")
             yield(5)
         }
@@ -276,7 +276,7 @@ class SequenceBuilderTest {
 
     @Test
     fun testInfiniteYieldAll() {
-        val values = iterator {
+        val values = iterator<Int> {
             while (true) {
                 yieldAll((1..5).map { it })
             }

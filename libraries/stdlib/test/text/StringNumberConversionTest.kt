@@ -212,7 +212,7 @@ class StringNumberConversionTest {
             assertFailsOrNull("   ")
         }
 
-        @Suppress("SIGNED_CONSTANT_CONVERTED_TO_UNSIGNED")
+        @Suppress("SIGNED_CONSTANT_CONVERTED_TO_UNSIGNED", "CONSTANT_EXPECTED_TYPE_MISMATCH")
         compareConversionWithRadix(String::toUInt, String::toUIntOrNull) {
             assertProduces(10, "0", 0u)
             assertProduces(10, "473", 473u)
