@@ -55,7 +55,8 @@ compileKotlinCommon {
                 "-Xuse-experimental=kotlin.contracts.ExperimentalContracts",
                 "-Xinline-classes",
                 "-Xallow-kotlin-package",
-                "-Xallow-result-return-type"
+                "-Xallow-result-return-type",
+                "-Xnew-inference"
         ]
     }
 }
@@ -71,7 +72,8 @@ compileCoroutinesExperimentalKotlinCommon {
                 "-Xcoroutines=enable",
                 "-XXLanguage:-ReleaseCoroutines",
                 "-Xallow-kotlin-package",
-                "-Xallow-result-return-type"
+                "-Xallow-result-return-type",
+                "-Xnew-inference"
         ]
     }
 }
