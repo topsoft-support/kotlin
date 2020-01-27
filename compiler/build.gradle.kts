@@ -10,10 +10,8 @@ val compilerModules: Array<String> by rootProject.extra
 val otherCompilerModules = compilerModules.filter { it != path }
 
 val effectSystemEnabled: Boolean by rootProject.extra
-val newInferenceEnabled: Boolean by rootProject.extra
 
 configureFreeCompilerArg(effectSystemEnabled, "-Xeffect-system")
-configureFreeCompilerArg(newInferenceEnabled, "-Xnew-inference")
 configureFreeCompilerArg(true, "-Xuse-mixed-named-arguments")
 
 fun configureFreeCompilerArg(isEnabled: Boolean, compilerArgument: String) {

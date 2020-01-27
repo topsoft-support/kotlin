@@ -347,7 +347,8 @@ allprojects {
         "-Xuse-experimental=kotlin.Experimental",
         "-Xread-deserialized-contracts",
         "-Xjvm-default=compatibility",
-        "-progressive".takeIf { hasProperty("test.progressive.mode") }
+        "-progressive".takeIf { hasProperty("test.progressive.mode") },
+        "-Xnew-inference"
     )
 
     tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>> {

@@ -41,7 +41,7 @@ data class CommonBuildMetaInfo(
             multiplatformVersion: Int,
             metadataVersionArray: IntArray?
         ): CommonBuildMetaInfo {
-            val metadataVersion = metadataVersionArray?.let(::JvmMetadataVersion) ?: JvmMetadataVersion.INSTANCE
+            val metadataVersion = metadataVersionArray?.let { JvmMetadataVersion(*it) } ?: JvmMetadataVersion.INSTANCE
             return CommonBuildMetaInfo(
                 isEAP = isEAP,
                 compilerBuildVersion = compilerBuildVersion,

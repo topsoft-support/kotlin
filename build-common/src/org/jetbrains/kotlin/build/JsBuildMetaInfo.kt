@@ -41,7 +41,7 @@ data class JsBuildMetaInfo(
             multiplatformVersion: Int,
             metadataVersionArray: IntArray?
         ): JsBuildMetaInfo {
-            val metadataVersion = metadataVersionArray?.let(::JsMetadataVersion) ?: JsMetadataVersion.INSTANCE
+            val metadataVersion = metadataVersionArray?.let { JsMetadataVersion(*it) } ?: JsMetadataVersion.INSTANCE
             return JsBuildMetaInfo(
                 isEAP = isEAP,
                 compilerBuildVersion = compilerBuildVersion,

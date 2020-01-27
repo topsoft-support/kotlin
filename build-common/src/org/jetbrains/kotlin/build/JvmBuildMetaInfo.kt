@@ -56,7 +56,7 @@ data class JvmBuildMetaInfo(
             multiplatformVersion: Int,
             metadataVersionArray: IntArray?
         ): JvmBuildMetaInfo {
-            val metadataVersion = metadataVersionArray?.let(::JvmMetadataVersion) ?: JvmMetadataVersion.INSTANCE
+            val metadataVersion = metadataVersionArray?.let { JvmMetadataVersion(*it) } ?: JvmMetadataVersion.INSTANCE
             return JvmBuildMetaInfo(
                 isEAP = isEAP,
                 compilerBuildVersion = compilerBuildVersion,
