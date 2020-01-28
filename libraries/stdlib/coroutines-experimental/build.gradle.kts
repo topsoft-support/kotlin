@@ -36,6 +36,7 @@ configurations {
 dependencies {
     api(kotlinStdlib())
     testImplementation(project(":kotlin-test:kotlin-test-junit"))
+    "migrationTestImplementation"(sourceSets.main.get().output)
 }
 
 tasks {
