@@ -188,7 +188,7 @@ class CoroutineBuilder(val suspendContext: XSuspendContext) {
         (suspendContext as SuspendContextImpl).thread!! // @TODO hash replace !!
 
     private fun findResumeMethodIndex(frames: List<StackFrameProxyImpl>): Int {
-        for (i: Int in frames.lastIndex downTo 0)
+        for (i in frames.lastIndex downTo 0)
             if (isResumeMethodFrame(frames[i])) {
                 return i
             }
