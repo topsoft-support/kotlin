@@ -71,7 +71,8 @@ internal abstract class KonanCliRunner(
     val fullName: String,
     val project: Project,
     private val additionalJvmArgs: List<String>,
-    private val canRunInDaemon: Boolean
+    private val canRunInDaemon: Boolean,
+    private val disableC2: Boolean = true
 ) : KonanToolRunner {
     override val mainClass = "org.jetbrains.kotlin.cli.utilities.MainKt"
 
@@ -97,10 +98,8 @@ internal abstract class KonanCliRunner(
             add("-Xmx3G")
         }
         // Disable C2 compiler for HotSpot VM to improve compilation speed.
-        System.getProperty("java.vm.name")?.let {
-            if (it.contains("HotSpot", true)) {
-                add("-XX:TieredStopAtLevel=1")
-            }
+        if (disableC2 && System.getProperty("java.vm.name")?.contains("HotSpot", true) == true) {
+            add("-XX:TieredStopAtLevel=1")
         }
         addAll(additionalJvmArgs)
         addAll(project.jvmArgs)
@@ -249,5 +248,6 @@ internal class KonanLibraryGenerationRunner(project: Project, additionalJvmArgs:
         "Platform libraries generator",
         project,
         additionalJvmArgs,
-        canRunInDaemon = false // Library generator starts the interop tool which cannot be executed in daemon.
+        canRunInDaemon = false, // Library generator starts the interop tool which cannot be executed in daemon.
+        disableC2 = false       // The library generator works for a long time so enabling C2 can improve performance.
     )

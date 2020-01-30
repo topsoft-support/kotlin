@@ -816,11 +816,9 @@ internal class CacheBuilder(val project: Project, val binary: NativeBinary) {
             ensureCompilerProvidedLibPrecached(platformLibName, platformLibs, visitedLibs)
     }
 
-    private val KonanTarget.cacheWorks
-        get() = this == KonanTarget.IOS_X64 || this == KonanTarget.MACOS_X64
 
     fun buildCompilerArgs(): List<String> = mutableListOf<String>().apply {
-        if (konanCacheKind != NativeCacheKind.NONE && !optimized && compilation.konanTarget.cacheWorks) {
+        if (konanCacheKind != NativeCacheKind.NONE && !optimized && cacheWorksFor(compilation.konanTarget)) {
             rootCacheDirectory.mkdirs()
             ensureCompilerProvidedLibsPrecached()
             add("-Xcache-directory=${rootCacheDirectory.absolutePath}")
@@ -851,6 +849,9 @@ internal class CacheBuilder(val project: Project, val binary: NativeBinary) {
             cacheKind.outputKind?.let {
                 "${it.prefix(konanTarget)}${baseName}-cache${it.suffix(konanTarget)}"
             } ?: error("No output for kind $cacheKind")
+
+        internal fun cacheWorksFor(target: KonanTarget) =
+            target == KonanTarget.IOS_X64 || target == KonanTarget.MACOS_X64
 
         internal val DEFAULT_CACHE_KIND: NativeCacheKind = NativeCacheKind.STATIC
     }

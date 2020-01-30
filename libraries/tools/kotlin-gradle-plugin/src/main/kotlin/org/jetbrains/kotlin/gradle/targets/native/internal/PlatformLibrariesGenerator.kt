@@ -31,8 +31,8 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
     private val defDirectory =
         File(distribution.platformDefs(konanTarget.family)).absoluteFile
 
-    private val cacheDirectory =
-        CacheBuilder.getRootCacheDirectory(File(project.konanHome), konanTarget, true, project.konanCacheKind).absoluteFile
+    private val shouldBuildCaches: Boolean =
+        CacheBuilder.cacheWorksFor(konanTarget) && project.konanCacheKind != NativeCacheKind.NONE
 
     private val presentDefs: Set<String> by lazy {
         defDirectory
@@ -43,7 +43,7 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
     /**
      * Checks that all platform libs for [konanTarget] actually exist in the [distribution].
      */
-    private fun checkLibrariesInDistribution() : Boolean {
+    private fun checkLibrariesInDistribution(): Boolean {
         val presentPlatformLibs = platformLibsDirectory
             .listFiles { file -> file.isDirectory }.orEmpty()
             .map { it.name }.toSet()
@@ -53,13 +53,16 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
     }
 
     /**
-     * Check that caches for all platform libs for [konanTarget] actually exist in the [cacheDirectory].
+     * Check that caches for all platform libs for [konanTarget] actually exist in the cache directory.
      */
     private fun checkCaches(): Boolean {
-        if (project.konanCacheKind == NativeCacheKind.NONE) {
+        if (!shouldBuildCaches) {
             return true
         }
 
+        val cacheDirectory = CacheBuilder.getRootCacheDirectory(
+            File(project.konanHome), konanTarget, true, project.konanCacheKind
+        )
         val presentCacheFiles = cacheDirectory.listFiles().orEmpty().map { it.name }.toSet()
         return presentDefs.all {
             CacheBuilder.getCacheFileName(it, project.konanCacheKind, konanTarget) in presentCacheFiles
@@ -80,19 +83,20 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
         }
 
     private fun runGenerationTool() = with(project) {
-        val logLevel = if (logger.isInfoEnabled) "debug" else "silent"
-        val args = mutableListOf(
-            "-target", konanTarget.visibleName,
-            "-log-level", logLevel
-        )
+        val args = mutableListOf("-target", konanTarget.visibleName)
+        if (logger.isInfoEnabled) {
+            args.add("-verbose")
+        }
 
         // We can generate caches using either [CacheBuilder] or the library generator. Using CacheBuilder allows
         // keeping all the caching logic in one place while the library generator speeds up building caches because
         // it works in parallel. We use the library generator for now due to performance reasons.
         //
         // TODO: Supporting Gradle Worker API (or other parallelization) in the CacheBuilder and enabling
-        //       the compiler daemon by default will allow switching to the CacheBuilder without performance penalty.
-        if (konanCacheKind != NativeCacheKind.NONE) {
+        //       the compiler daemon for interop will allow switching to the CacheBuilder without performance penalty.
+        //       Alternatively we can rely on the library generator tool in the CacheBuilder and eliminate a separate
+        //       logic for library caching there.
+        if (shouldBuildCaches) {
             args.addArg("-cache-kind", konanCacheKind.produce!!)
             args.addArg(
                 "-cache-directory",
@@ -107,16 +111,17 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
     fun generatePlatformLibsIfNeeded(): Unit = with(project) {
         if (!HostManager(distribution).isEnabled(konanTarget)) {
             // We cannot generate libs on a machine that doesn't support the requested target.
-
             return
         }
 
+        // Don't run the generator if libraries/caches for this target were already built during this Gradle invocation.
         val alreadyGenerated = alreadyProcessed.isGenerated(platformLibsDirectory)
         val alreadyCached = alreadyProcessed.isCached(platformLibsDirectory, project.konanCacheKind)
         if ((alreadyGenerated && alreadyCached) || !defDirectory.exists()) {
             return
         }
 
+        // Check if libraries/caches for this target already exist (requires reading from disc).
         val platformLibsAreReady = checkLibrariesInDistribution()
         if (platformLibsAreReady) {
             alreadyProcessed.setGenerated(platformLibsDirectory)
@@ -127,17 +132,18 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
             alreadyProcessed.setCached(platformLibsDirectory, project.konanCacheKind)
         }
 
-        if (platformLibsAreReady && cachesAreReady) {
-            return
+        val generationMessage = when {
+            !platformLibsAreReady && !cachesAreReady -> "Generate and precompile platform libraries for $konanTarget"
+            platformLibsAreReady && !cachesAreReady -> "Precompile platform libraries for $konanTarget"
+            !platformLibsAreReady && cachesAreReady -> "Generate platform libraries for $konanTarget"
+            else -> return // Both caches and libraries exist thus there is no need to run the generator.
         }
 
-        // TODO: Improve logging.
-        logger.lifecycle("Generate platform libraries for $konanTarget...")
-        logger.lifecycleWithDuration("Generate platform libraries for $konanTarget finished,") {
+        logger.lifecycle(generationMessage)
+        logger.lifecycleWithDuration("$generationMessage finished,") {
             runGenerationTool()
         }
 
-        // TODO: May be replace these assert with just a warning?
         val librariesAreActuallyGenerated = checkLibrariesInDistribution()
         assert(librariesAreActuallyGenerated) { "Some platform libraries were not generated" }
         if (librariesAreActuallyGenerated) {

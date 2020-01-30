@@ -12,6 +12,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.compilerRunner.KonanCompilerRunner
 import org.jetbrains.kotlin.compilerRunner.konanVersion
+import org.jetbrains.kotlin.gradle.dsl.NativeDistributionType
 import org.jetbrains.kotlin.gradle.logging.kotlinInfo
 import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
 import org.jetbrains.kotlin.konan.CompilerVersion
@@ -39,18 +40,22 @@ class NativeCompilerDownloader(
     private val logger: Logger
         get() = project.logger
 
-    // We provide restricted distributions only for Mac.
-    private val restrictedDistribution: Boolean
-        get() = HostManager.hostIsMac && PropertiesProvider(project).nativeRestrictedDistribution ?: false
+    private val distributionType: NativeDistributionType
+        get() = PropertiesProvider(project).nativeDistributionType?.takeIf {
+            it.isAvailableFor(HostManager.host, compilerVersion)
+        } ?: NativeDistributionType.REGULAR
 
     private val simpleOsName: String
         get() = HostManager.simpleOsName()
 
     private val dependencyName: String
-        get() = if (restrictedDistribution) {
-            "kotlin-native-restricted-$simpleOsName"
-        } else {
-            "kotlin-native-$simpleOsName"
+        get() {
+            val dependencySuffix = distributionType.suffix
+            return if (dependencySuffix != null) {
+                "kotlin-native-$dependencySuffix-$simpleOsName"
+            } else {
+                "kotlin-native-$simpleOsName"
+            }
         }
 
     private val dependencyNameWithVersion: String
