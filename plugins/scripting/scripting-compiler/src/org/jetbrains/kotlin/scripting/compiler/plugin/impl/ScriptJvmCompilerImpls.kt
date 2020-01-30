@@ -4,16 +4,14 @@
  */
 package org.jetbrains.kotlin.scripting.compiler.plugin.impl
 
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.AnalyzerWithCompilerReport
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.NoScopeRecordCliBindingTrace
 import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
 import org.jetbrains.kotlin.cli.jvm.config.JvmClasspathRoot
-import org.jetbrains.kotlin.cli.jvm.config.JvmContentRoot
-import org.jetbrains.kotlin.cli.jvm.config.jvmClasspathRoots
 import org.jetbrains.kotlin.codegen.ClassBuilderFactories
 import org.jetbrains.kotlin.codegen.KotlinCodegenFacade
 import org.jetbrains.kotlin.codegen.state.GenerationState
@@ -32,7 +30,10 @@ import kotlin.script.experimental.jvm.compilationCache
 import kotlin.script.experimental.jvm.impl.KJvmCompiledScript
 import kotlin.script.experimental.jvm.jvm
 
-class ScriptJvmCompilerIsolated(val hostConfiguration: ScriptingHostConfiguration) : ScriptCompilerProxy {
+class ScriptJvmCompilerIsolated(
+    val hostConfiguration: ScriptingHostConfiguration,
+    val scriptCompilationConfigurationRefine: ScriptCompilationConfigurationRefine
+) : ScriptCompilerProxy {
 
     override fun compile(
         script: SourceCode,
@@ -40,12 +41,18 @@ class ScriptJvmCompilerIsolated(val hostConfiguration: ScriptingHostConfiguratio
     ): ResultWithDiagnostics<CompiledScript<*>> =
         withMessageCollectorAndDisposable(script = script) { messageCollector, disposable ->
             withScriptCompilationCache(script, scriptCompilationConfiguration, messageCollector) {
-                val initialConfiguration = scriptCompilationConfiguration.refineBeforeParsing(script).valueOr {
+                val initialConfiguration = runBlocking {
+                    scriptCompilationConfigurationRefine(
+                        ScriptCompilationConfiguration.refineConfigurationBeforeParsing,
+                        ScriptConfigurationRefinementContext(script, scriptCompilationConfiguration)
+                    )
+                }.valueOr {
                     return@withScriptCompilationCache it
                 }
 
                 val context = createIsolatedCompilationContext(
-                    initialConfiguration, hostConfiguration, messageCollector, disposable
+                    initialConfiguration, hostConfiguration, messageCollector, disposable,
+                    scriptCompilationConfigurationRefine
                 )
 
                 compileImpl(script, context, messageCollector)
@@ -53,7 +60,10 @@ class ScriptJvmCompilerIsolated(val hostConfiguration: ScriptingHostConfiguratio
         }
 }
 
-class ScriptJvmCompilerFromEnvironment(val environment: KotlinCoreEnvironment) : ScriptCompilerProxy {
+class ScriptJvmCompilerFromEnvironment(
+    val environment: KotlinCoreEnvironment,
+    val scriptCompilationConfigurationRefine: ScriptCompilationConfigurationRefine
+) : ScriptCompilerProxy {
 
     override fun compile(
         script: SourceCode,
@@ -63,11 +73,19 @@ class ScriptJvmCompilerFromEnvironment(val environment: KotlinCoreEnvironment) :
         return withMessageCollector(script = script, parentMessageCollector = parentMessageCollector) { messageCollector ->
             withScriptCompilationCache(script, scriptCompilationConfiguration, messageCollector) {
 
-                val initialConfiguration = scriptCompilationConfiguration.refineBeforeParsing(script).valueOr {
+                val initialConfiguration = runBlocking {
+                    scriptCompilationConfigurationRefine(
+                        ScriptCompilationConfiguration.refineConfigurationBeforeParsing,
+                        ScriptConfigurationRefinementContext(script, scriptCompilationConfiguration)
+                    )
+                }.valueOr {
                     return@withScriptCompilationCache it
                 }
 
-                val context = createCompilationContextFromEnvironment(initialConfiguration, environment, messageCollector)
+                val context = createCompilationContextFromEnvironment(
+                    initialConfiguration, environment, messageCollector,
+                    scriptCompilationConfigurationRefine
+                )
 
                 try {
                     environment.configuration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
