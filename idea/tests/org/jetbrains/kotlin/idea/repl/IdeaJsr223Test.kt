@@ -5,10 +5,12 @@
 
 package org.jetbrains.kotlin.idea.repl
 
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.testFramework.PlatformTestCase
 import org.jetbrains.kotlin.test.JUnit3WithIdeaConfigurationRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
@@ -27,7 +29,7 @@ class IdeaJsr223Test : PlatformTestCase() {
         assertNotNull(engine)
 
         val res0 = assertFails { engine.eval("val x =") }
-        assertTrue("Unexpected check results: $res0", (res0 as? ScriptException)?.message?.contains("incomplete code") ?: false)
+        assertTrue("Unexpected check results: $res0", (res0 as? ScriptException)?.message?.contains("Expecting an expression") ?: false)
 
         val res1 = engine.eval("val x = 5\nval y = listOf(x)")
         assertNull("Unexpected eval result: $res1", res1)
