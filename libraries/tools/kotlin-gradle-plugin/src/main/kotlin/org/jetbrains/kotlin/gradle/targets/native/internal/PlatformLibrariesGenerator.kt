@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.gradle.utils.lifecycleWithDuration
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.konan.target.customerDistribution
+import org.jetbrains.kotlin.konan.util.visibleName
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -133,8 +134,10 @@ internal class PlatformLibrariesGenerator(val project: Project, val konanTarget:
         }
 
         val generationMessage = when {
-            !platformLibsAreReady && !cachesAreReady -> "Generate and precompile platform libraries for $konanTarget"
-            platformLibsAreReady && !cachesAreReady -> "Precompile platform libraries for $konanTarget"
+            !platformLibsAreReady && !cachesAreReady ->
+                "Generate and precompile platform libraries for $konanTarget (precompilation: ${project.konanCacheKind.visibleName})"
+            platformLibsAreReady && !cachesAreReady ->
+                "Precompile platform libraries for $konanTarget (precompilation: ${project.konanCacheKind.visibleName})"
             !platformLibsAreReady && cachesAreReady -> "Generate platform libraries for $konanTarget"
             else -> return // Both caches and libraries exist thus there is no need to run the generator.
         }
