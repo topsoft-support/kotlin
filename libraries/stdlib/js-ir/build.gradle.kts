@@ -33,7 +33,7 @@ dependencies {
     fullJsIrCli(intellijCoreDep()) { includeJars("intellij-core") }
     if (Platform[193].orLower()) {
         fullJsIrCli(intellijDep()) {
-            includeJars("trove4j", "guava", "jdom", "asm-all", rootProject = rootProject)
+            includeJars("picocontainer", rootProject = rootProject)
         }
     }
     fullJsIrCli(intellijDep()) {
