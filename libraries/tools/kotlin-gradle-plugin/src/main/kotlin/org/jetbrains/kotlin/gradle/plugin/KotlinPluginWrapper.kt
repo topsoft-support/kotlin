@@ -39,8 +39,6 @@ import org.jetbrains.kotlin.gradle.tasks.KOTLIN_MODULE_GROUP
 import org.jetbrains.kotlin.gradle.testing.internal.KotlinTestsRegistry
 import org.jetbrains.kotlin.gradle.utils.checkGradleCompatibility
 import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
-import org.jetbrains.kotlin.statistics.metrics.BooleanMetrics
-import org.jetbrains.kotlin.statistics.metrics.NumericalMetrics
 import org.jetbrains.kotlin.statistics.metrics.StringMetrics
 import javax.inject.Inject
 import kotlin.reflect.KClass
@@ -164,10 +162,10 @@ open class KotlinJsPluginWrapper @Inject constructor(
     override fun getPlugin(project: Project, kotlinGradleBuildServices: KotlinGradleBuildServices): Plugin<Project> {
         val propertiesProvider = PropertiesProvider(project)
 
-        return when (propertiesProvider.jsMode) {
-            JsMode.IR -> KotlinJsIrPlugin(kotlinPluginVersion)
-            JsMode.LEGACY -> KotlinJsPlugin(kotlinPluginVersion, false)
-            JsMode.MIXED -> KotlinJsPlugin(kotlinPluginVersion, true)
+        return when (propertiesProvider.jsCompiler) {
+            JsCompilerType.KLIB -> KotlinJsIrPlugin(kotlinPluginVersion)
+            JsCompilerType.LEGACY -> KotlinJsPlugin(kotlinPluginVersion, false)
+            JsCompilerType.BOTH -> KotlinJsPlugin(kotlinPluginVersion, true)
         }
     }
 
@@ -176,9 +174,9 @@ open class KotlinJsPluginWrapper @Inject constructor(
     override fun defineExtension(project: Project) {
         val propertiesProvider = PropertiesProvider(project)
 
-        projectExtensionClass = when (propertiesProvider.jsMode) {
-            JsMode.IR -> KotlinJsIrProjectExtension::class
-            JsMode.LEGACY, JsMode.MIXED -> KotlinJsProjectExtension::class
+        projectExtensionClass = when (propertiesProvider.jsCompiler) {
+            JsCompilerType.KLIB -> KotlinJsIrProjectExtension::class
+            JsCompilerType.LEGACY, JsCompilerType.BOTH -> KotlinJsProjectExtension::class
         }
     }
 
