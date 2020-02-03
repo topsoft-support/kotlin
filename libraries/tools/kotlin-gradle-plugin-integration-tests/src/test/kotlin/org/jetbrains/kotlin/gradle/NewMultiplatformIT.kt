@@ -2303,7 +2303,7 @@ class NewMultiplatformIT : BaseGradleIT() {
             setupWorkingDir()
             gradleBuildScript().modify(::transformBuildScriptWithPluginsDsl)
             if (!jsIr) {
-                gradleProperties().appendText(jsMode(JsCompilerType.legacy))
+                gradleProperties().appendText(jsCompilerType(JsCompilerType.legacy))
             }
 
             val tasks = listOf("jvm", "js", nativeHostTargetName).map { ":compileIntegrationTestKotlin${it.capitalize()}" }
