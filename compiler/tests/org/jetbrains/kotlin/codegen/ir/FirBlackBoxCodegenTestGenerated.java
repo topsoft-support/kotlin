@@ -2143,6 +2143,11 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
                 runTest("compiler/testData/codegen/box/callableReference/function/booleanNotIntrinsic.kt");
             }
 
+            @TestMetadata("boundToExpr.kt")
+            public void testBoundToExpr() throws Exception {
+                runTest("compiler/testData/codegen/box/callableReference/function/boundToExpr.kt");
+            }
+
             @TestMetadata("classMemberFromClass.kt")
             public void testClassMemberFromClass() throws Exception {
                 runTest("compiler/testData/codegen/box/callableReference/function/classMemberFromClass.kt");

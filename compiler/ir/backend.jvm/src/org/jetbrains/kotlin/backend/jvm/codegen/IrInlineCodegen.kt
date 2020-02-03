@@ -90,9 +90,19 @@ class IrInlineCodegen(
                 irValueParameter.defaultValue?.expression?.type ?: irValueParameter.type
             ) && isInlineIrExpression(argumentExpression)
         ) {
-            val irReference: IrFunctionReference =
-                (argumentExpression as IrBlock).statements.filterIsInstance<IrFunctionReference>().single()
-            val boundReceiver = argumentExpression.statements.filterIsInstance<IrVariable>().singleOrNull()
+            val irReference: IrFunctionReference
+            val boundReceiver: IrVariable?
+            when (argumentExpression) {
+                is IrBlock -> {
+                    irReference = argumentExpression.statements.filterIsInstance<IrFunctionReference>().single()
+                    boundReceiver = argumentExpression.statements.filterIsInstance<IrVariable>().singleOrNull()
+                }
+                is IrFunctionReference -> {
+                    irReference = argumentExpression
+                    boundReceiver = null
+                }
+                else -> error("argumentExpression should be IrFunctionReference or a block containing one, got ${argumentExpression}")
+            }
             val lambdaInfo =
                 rememberClosure(irReference, parameterType, irValueParameter, boundReceiver) as IrExpressionLambdaImpl
 
