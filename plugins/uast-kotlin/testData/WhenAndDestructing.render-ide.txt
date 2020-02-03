@@ -9,8 +9,8 @@ public final class WhenAndDestructingKt {
 
              -> {
                 @null var var837f1e82: <ErrorType> = arr
-                @null var bindingContext: java.lang.String = var837f1e82.<ERROR FUNCTION>()
-                @null var statementFilter: java.lang.String = var837f1e82.<ERROR FUNCTION>()
+                @null var bindingContext: java.lang.String = var837f1e82.<anonymous class>()
+                @null var statementFilter: java.lang.String = var837f1e82.<anonymous class>()
                 return bindingContext
                 break
             }

@@ -114,14 +114,14 @@ UFile (package = org.jetbrains.uast.kotlin)
                                             USimpleNameReferenceExpression (identifier = vardbcd0724)
                                             UCallExpression (kind = UastCallKind(name='method_call'), argCount = 0))
                                                 UIdentifier (Identifier (component1))
-                                                USimpleNameReferenceExpression (identifier = <ERROR FUNCTION>, resolvesTo = null)
+                                                USimpleNameReferenceExpression (identifier = <anonymous class>, resolvesTo = null)
                                     ULocalVariable (name = b)
                                         UAnnotation (fqName = org.jetbrains.annotations.NotNull)
                                         UQualifiedReferenceExpression
                                             USimpleNameReferenceExpression (identifier = vardbcd0724)
                                             UCallExpression (kind = UastCallKind(name='method_call'), argCount = 0))
                                                 UIdentifier (Identifier (component2))
-                                                USimpleNameReferenceExpression (identifier = <ERROR FUNCTION>, resolvesTo = null)
+                                                USimpleNameReferenceExpression (identifier = <anonymous class>, resolvesTo = null)
                 UDeclarationsExpression
                     ULocalVariable (name = y)
                         ULambdaExpression
