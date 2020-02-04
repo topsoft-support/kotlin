@@ -6,6 +6,8 @@
 package org.jetbrains.kotlin.idea.refactoring.rename
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.SearchScope
 import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.usageView.UsageInfo
 import org.jetbrains.kotlin.asJava.namedUnwrappedElement
@@ -37,6 +39,19 @@ class RenameKotlinParameterProcessor : RenameKotlinPsiProcessor() {
         checkOriginalUsagesRetargeting(declaration, newName, result, collisions)
         checkNewNameUsagesRetargeting(declaration, newName, collisions)
         result += collisions
+    }
+
+    override fun findReferences(
+        element: PsiElement,
+        searchScope: SearchScope,
+        searchInCommentsAndStrings: Boolean
+    ): MutableCollection<PsiReference> {
+        /*
+        Searching here ignoring `searchScope` should not affect performance
+        As default implementation just calls the same method RenameKotlinPsiProcessor.findReferences (which returns non-lazy list)
+        And then filters the result
+         */
+        return super.findReferences(element).toMutableList()
     }
 
     override fun renameElement(element: PsiElement, newName: String, usages: Array<UsageInfo>, listener: RefactoringElementListener?) {
