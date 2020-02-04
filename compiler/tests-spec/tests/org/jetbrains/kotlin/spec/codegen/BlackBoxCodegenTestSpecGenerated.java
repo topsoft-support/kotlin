@@ -3331,6 +3331,26 @@ public class BlackBoxCodegenTestSpecGenerated extends AbstractBlackBoxCodegenTes
                             runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.4.kt");
                         }
 
+                        @TestMetadata("1.5.kt")
+                        public void test1_5() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.5.kt");
+                        }
+
+                        @TestMetadata("1.6.kt")
+                        public void test1_6() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.6.kt");
+                        }
+
+                        @TestMetadata("1.7.kt")
+                        public void test1_7() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.7.kt");
+                        }
+
+                        @TestMetadata("1.8.kt")
+                        public void test1_8() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.8.kt");
+                        }
+
                         public void testAllFilesPresentInPos() throws Exception {
                             KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos"), Pattern.compile("^(.+)\\.kt$"), null, true);
                         }
