@@ -3316,6 +3316,11 @@ public class BlackBoxCodegenTestSpecGenerated extends AbstractBlackBoxCodegenTes
                             runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.1.kt");
                         }
 
+                        @TestMetadata("1.10.kt")
+                        public void test1_10() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.10.kt");
+                        }
+
                         @TestMetadata("1.2.kt")
                         public void test1_2() throws Exception {
                             runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.2.kt");
@@ -3349,6 +3354,11 @@ public class BlackBoxCodegenTestSpecGenerated extends AbstractBlackBoxCodegenTes
                         @TestMetadata("1.8.kt")
                         public void test1_8() throws Exception {
                             runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.8.kt");
+                        }
+
+                        @TestMetadata("1.9.kt")
+                        public void test1_9() throws Exception {
+                            runTest("compiler/tests-spec/testData/codegen/box/linked/overload-resolution/callables-and-invoke-convention/p-6/pos/1.9.kt");
                         }
 
                         public void testAllFilesPresentInPos() throws Exception {
