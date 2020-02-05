@@ -43,7 +43,8 @@ fun buildConfiguration(environment: KotlinCoreEnvironment, moduleName: String): 
             AnalysisFlags.useExperimental to listOf(
                 "kotlin.contracts.ExperimentalContracts",
                 "kotlin.Experimental",
-                "kotlin.ExperimentalMultiplatform"
+                "kotlin.ExperimentalMultiplatform",
+                "-XXLanguage:-NewInference"
             ),
             AnalysisFlags.allowResultReturnType to true
         )
