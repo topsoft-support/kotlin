@@ -29,7 +29,7 @@ dependencies {
     compile(project(":kotlin-util-io"))
     compile(project(":compiler:ir.serialization.common"))
 
-    compile(toolsJar())
+    compileOnly(toolsJar())
     compileOnly(intellijCoreDep()) { includeJars("intellij-core") }
     compileOnly(intellijDep()) { includeIntellijCoreJarDependencies(project) }
 
