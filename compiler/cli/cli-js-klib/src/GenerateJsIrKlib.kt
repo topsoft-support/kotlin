@@ -37,14 +37,14 @@ fun buildConfiguration(environment: KotlinCoreEnvironment, moduleName: String): 
         LanguageVersion.LATEST_STABLE, ApiVersion.LATEST_STABLE,
         specificFeatures = mapOf(
             LanguageFeature.AllowContractsForCustomFunctions to LanguageFeature.State.ENABLED,
-            LanguageFeature.MultiPlatformProjects to LanguageFeature.State.ENABLED
+            LanguageFeature.MultiPlatformProjects to LanguageFeature.State.ENABLED,
+            LanguageFeature.NewInference to LanguageFeature.State.DISABLED
         ),
         analysisFlags = mapOf(
             AnalysisFlags.useExperimental to listOf(
                 "kotlin.contracts.ExperimentalContracts",
                 "kotlin.Experimental",
-                "kotlin.ExperimentalMultiplatform",
-                "-XXLanguage:-NewInference"
+                "kotlin.ExperimentalMultiplatform"
             ),
             AnalysisFlags.allowResultReturnType to true
         )
