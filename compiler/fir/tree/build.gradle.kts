@@ -47,7 +47,6 @@ val generateTree by tasks.registering(NoDebugJavaExec::class) {
         .withPathSensitivity(PathSensitivity.RELATIVE)
 
     outputs.dirs(generationRoot)
-    outputs.cacheIf { true }
 
     args(generationRoot)
     classpath = generatorClasspath
