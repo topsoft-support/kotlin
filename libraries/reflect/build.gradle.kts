@@ -178,6 +178,8 @@ val relocateCoreSources by task<Copy> {
     filter { line ->
         line.replace("org.jetbrains.kotlin", "kotlin.reflect.jvm.internal.impl")
     }
+
+    outputs.cacheIf { true }
 }
 
 tasks.getByName("jar").enabled = false
