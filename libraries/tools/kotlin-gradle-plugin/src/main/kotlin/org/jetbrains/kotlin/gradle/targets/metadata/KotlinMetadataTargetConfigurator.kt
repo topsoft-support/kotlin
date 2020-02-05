@@ -115,8 +115,8 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
         override fun run() = Unit
     }
 
-    override fun createJarTasks(target: KotlinMetadataTarget): Pair<String, Zip> {
-        val result = super.createJarTasks(target)
+    override fun createArchiveTasks(target: KotlinMetadataTarget): Zip {
+        val result = super.createArchiveTasks(target)
 
         if (target.project.isKotlinGranularMetadataEnabled) {
             /** This JAR is created in addition to the main one, published with a classifier, but is by default used
