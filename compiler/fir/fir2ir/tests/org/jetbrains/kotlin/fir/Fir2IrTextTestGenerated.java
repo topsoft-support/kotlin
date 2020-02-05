@@ -161,6 +161,11 @@ public class Fir2IrTextTestGenerated extends AbstractFir2IrTextTest {
             runTest("compiler/testData/ir/irText/classes/inlineClass.kt");
         }
 
+        @TestMetadata("inlineClassSyntheticMethods.kt")
+        public void testInlineClassSyntheticMethods() throws Exception {
+            runTest("compiler/testData/ir/irText/classes/inlineClassSyntheticMethods.kt");
+        }
+
         @TestMetadata("innerClass.kt")
         public void testInnerClass() throws Exception {
             runTest("compiler/testData/ir/irText/classes/innerClass.kt");
