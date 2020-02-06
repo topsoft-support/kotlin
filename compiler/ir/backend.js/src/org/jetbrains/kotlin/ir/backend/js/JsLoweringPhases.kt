@@ -306,11 +306,21 @@ private val bridgesConstructionPhase = makeJsModulePhase(
     prerequisite = setOf(suspendFunctionsLoweringPhase)
 )
 
+private val singleAbstractMethodPhase = makeJsModulePhase(
+    ::JsSingleAbstractMethodLowering,
+    name = "SingleAbstractMethod",
+    description = "Replace SAM conversions with instances of interface-implementing classes"
+)
+
 private val typeOperatorLoweringPhase = makeJsModulePhase(
     ::TypeOperatorLowering,
     name = "TypeOperatorLowering",
     description = "Lower IrTypeOperator with corresponding logic",
-    prerequisite = setOf(bridgesConstructionPhase, removeInlineFunctionsWithReifiedTypeParametersLoweringPhase)
+    prerequisite = setOf(
+        bridgesConstructionPhase,
+        removeInlineFunctionsWithReifiedTypeParametersLoweringPhase,
+        singleAbstractMethodPhase
+    )
 )
 
 private val secondaryConstructorLoweringPhase = makeJsModulePhase(
@@ -414,6 +424,7 @@ val jsPhases = namedIrModulePhase(
             functionInliningPhase then
             createScriptFunctionsPhase then
             provisionalFunctionExpressionPhase then
+            singleAbstractMethodPhase then
             lateinitLoweringPhase then
             tailrecLoweringPhase then
             enumClassConstructorLoweringPhase then

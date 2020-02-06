@@ -65,6 +65,8 @@ abstract class SingleAbstractMethodLowering(val context: CommonBackendContext) :
     abstract fun getSuperTypeForWrapper(typeOperand: IrType): IrType
 
     override fun lower(irFile: IrFile) {
+        cachedImplementations.clear()
+        inlineCachedImplementations.clear()
         enclosingContainer = irFile.declarations.filterIsInstance<IrClass>().find { it.origin == IrDeclarationOrigin.FILE_CLASS }
             ?: irFile
         irFile.transformChildrenVoid()
