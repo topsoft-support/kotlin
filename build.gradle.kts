@@ -73,7 +73,6 @@ val kotlinLanguageVersion by extra("1.4")
 
 allprojects {
     group = "org.jetbrains.kotlin"
-    version = kotlinVersion
 }
 
 extra["kotlin_root"] = rootDir
